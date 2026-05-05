@@ -7,6 +7,14 @@ context:
   component_version: ${{ component_name }}${{ major_version }}
   cxx_name: lib${{ name }}
   python_name: ${{ name }}-python
+  python_min: "3.12"
+  python_max: "3.13"
+  protobuf_version: "6.33.5"
+  # osx-arm64
+  libabseil_version: ">=20260107.0,<20260108.0a0"
+  libzenohc_version: ">=1.9.0,<1.9.1.0a0"
+  zeromq_version: ">=4.3.5,<4.4.0a0"
+
 
 recipe:
   name: ${{ name }}
@@ -17,7 +25,7 @@ source:
     sha256: c8483883f6dae93e154c1d189962f5dea0ca88c846a1463f16bb80063ec39b0f
 
 build:
-  number: 2
+  number: 0
 
 outputs:
   - package:
@@ -31,39 +39,42 @@ outputs:
     requirements:
       ignore_run_exports:
         by_name:
-          - python
-          - python_abi
+          - python >=${{ python_min }},<${{ python_max }}
+          - python_abi [version = "==3.12", build = "*_cp312"]
         from_package:
-          - python
+          - python >=${{ python_min }},<${{ python_max }}
+          - python_abi [version = "==3.12", build = "*_cp312"]
           - if: build_platform != target_platform
             then:
               - cross-python_${{ target_platform }}
       build:
         - ${{ compiler('cxx') }}
         - ${{ compiler('c') }}
-        - ${{ stdlib("c") }}
+        #- ${{ stdlib("c") }}
         - ninja
         - cmake
         - pkg-config
         - if: build_platform != target_platform
           then:
-            - python ${{ python_min }}.*
+            - python >=${{ python_min }},<${{ python_max }}
+            - python_abi [version = "==3.12", build = "*_cp312"]
             - cross-python_${{ target_platform }}
       host:
-        - python ${{ python_min }}.*
+        - python >=${{ python_min }},<${{ python_max }}
+        - python_abi [version = "==3.12", build = "*_cp312"]
         - libgz-cmake
         - libgz-msgs
         - libgz-tools
         - libgz-utils
         - cppzmq
-        - zeromq
-        - libzenohc
+        - zeromq ${{ zeromq_version }}
+        - libzenohc ${{ libzenohc_version }}
         - libzenohcxx
         - if: linux
           then:
             - libuuid
-        - libabseil
-        - libprotobuf
+        - libabseil ${{ libabseil_version }}
+        - libprotobuf ${{ protobuf_version }}.*
         - sqlite
       run:
         - cppzmq
@@ -99,21 +110,23 @@ outputs:
     requirements:
       build:
         - ${{ compiler('c') }}
-        - ${{ stdlib("c") }}
+        #- ${{ stdlib("c") }}
         - ${{ compiler('cxx') }}
         - ninja
         - cmake
         - pkg-config
         - if: build_platform != target_platform
           then:
-            - python
+            - python >=${{ python_min }},<${{ python_max }}
+            - python_abi [version = "==3.12", build = "*_cp312"]
             - cross-python_${{ target_platform }}
             - pybind11
             - pybind11-abi
             - pytest
       host:
         - ${{ pin_subpackage(cxx_name, exact=True) }}
-        - python
+        - python >=${{ python_min }},<${{ python_max }}
+        - python_abi [version = "==3.12", build = "*_cp312"]
         - pybind11
         - pybind11-abi
         - pytest
@@ -122,12 +135,12 @@ outputs:
         - gz-msgs
         # Workaround for errors of type
         # package libgz-sim7-<..> requires <...>, but none of the providers can be installed
-        - libabseil
-        - libprotobuf
+        - libabseil ${{ libabseil_version }}
+        - libprotobuf ${{ protobuf_version }}.*
         - libgz-msgs
       run:
         - ${{ pin_subpackage(cxx_name, exact=True) }}
-        - python
+        - python >=${{ python_min }}
         - gz-msgs-python
         # We depend on gz-msgs to ensure that the version of gz-msgs and gz-msgs-python are compatible
         - gz-msgs
