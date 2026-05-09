@@ -19,6 +19,7 @@ cxx_compiler:
 cxx_compiler_version:
 - '19'
 libabseil:
+- '20250512'
 - '20260107'
 libgz_cmake:
 - '5'
@@ -29,7 +30,8 @@ libgz_tools:
 libgz_utils:
 - '4'
 libprotobuf:
-- 6.33.5
+- '6.31.1'
+- '6.33.5'
 libzenohc:
 - '1.9'
 macos_machine:
@@ -56,3 +58,5 @@ zeromq:
 zip_keys:
 - - c_compiler_version
   - cxx_compiler_version
+- - libabseil
+  - libprotobuf

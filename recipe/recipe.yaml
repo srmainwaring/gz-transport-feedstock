@@ -18,6 +18,7 @@ source:
 
 build:
   number: 0
+  string: "protobuf${{ libprotobuf | replace('.', '') }}_abseil${{ libabseil | replace('.', '') }}_h${{ hash }}"
 
 outputs:
   - package:
