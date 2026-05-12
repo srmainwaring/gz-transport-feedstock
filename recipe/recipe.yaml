@@ -17,8 +17,8 @@ source:
     sha256: c8483883f6dae93e154c1d189962f5dea0ca88c846a1463f16bb80063ec39b0f
 
 build:
-  number: 0
-  string: "protobuf${{ libprotobuf | replace('.', '') }}_abseil${{ libabseil | replace('.', '') }}_h${{ hash }}"
+  number: 1
+  string: "protobuf${{ libprotobuf | version_to_buildstring }}_abseil${{ libabseil | version_to_buildstring }}_h${{ hash }}_${{ build_number }}"
 
 outputs:
   - package:
