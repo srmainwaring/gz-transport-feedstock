@@ -18,7 +18,7 @@ source:
 
 build:
   number: 1
-  string: "protobuf${{ libprotobuf | version_to_buildstring }}_abseil${{ libabseil | version_to_buildstring }}_h${{ hash }}_${{ build_number }}"
+  string: "py${{ python | version_to_buildstring }}_protobuf${{ libprotobuf | version_to_buildstring }}_abseil${{ libabseil | version_to_buildstring }}_h${{ hash }}_${{ build_number }}"
 
 outputs:
   - package:
